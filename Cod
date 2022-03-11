@@ -1,0 +1,124 @@
+#include <Wire.h>
+int tmp102Address = 0x48;
+
+int livingroom = 9;
+int bedroom = 10;
+int diningroom = 11;
+
+char Data;
+
+int motor1pin1 = 2;
+int motor1pin2 = 3;
+int motor2pin1 = 4;
+int motor2pin2 = 5;
+
+void setup(){
+  Serial.begin(9600);
+  Wire.begin();
+  
+  pinMode(livingroom,OUTPUT);
+  pinMode(bedroom,OUTPUT);
+  pinMode(diningroom,OUTPUT);
+
+  pinMode(motor1pin1, OUTPUT);
+  pinMode(motor1pin2, OUTPUT);
+  pinMode(motor2pin1, OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
+}
+ 
+void loop(){
+if(Serial.available()){
+        Data=Serial.read();
+        if(Data==('T')){
+          float celsius = getTemperature();
+          Serial.print("Celsius: ");
+          Serial.println(celsius);
+        }
+
+        if(Data==('4')){
+            digitalWrite(livingroom,HIGH);
+        }
+        if(Data==('1')){
+            digitalWrite(livingroom,LOW);
+        }
+        if(Data==('5')){
+            digitalWrite(bedroom,HIGH);
+        }
+        if(Data==('2')){
+            digitalWrite(bedroom,LOW);
+        }
+        if(Data==('6')){
+            digitalWrite(diningroom,HIGH);
+        }
+        if(Data==('3')){
+            digitalWrite(diningroom,LOW);
+        }
+        if(Data==('9')){
+            digitalWrite(livingroom,HIGH);
+            digitalWrite(bedroom,HIGH);
+            digitalWrite(diningroom,HIGH);
+        }
+        if(Data==('0')){
+            digitalWrite(livingroom,LOW);
+            digitalWrite(bedroom,LOW);
+            digitalWrite(diningroom,LOW);
+        }
+
+        if(Data=='O')
+           {garage_open();}
+         float tmp=getTemperature();
+        if(Data=='A' or tmp>28)
+            { //pornire ventilator
+              digitalWrite(motor1pin1, HIGH);
+              digitalWrite(motor1pin2, LOW);
+            }
+        if(Data=='C')
+           {garage_close();}
+        if(Data=='B' or tmp <20)
+           { // oprire ventilator
+             digitalWrite(motor1pin1, LOW);
+             digitalWrite(motor1pin2, LOW);
+            }
+  }
+}
+
+float getTemperature(){
+Wire.requestFrom(tmp102Address,2);
+
+byte MSB = Wire.read();
+byte LSB = Wire.read();
+
+int TemperatureSum = ((MSB << 8) | LSB) >> 4;
+
+float celsius = TemperatureSum*0.0625;
+return celsius;
+}
+
+
+void garage_open()
+{
+  for(int i=0; i<1; i++)
+   { digitalWrite(motor2pin1, HIGH);
+    digitalWrite(motor2pin2, LOW);
+    delay(500);
+  
+    digitalWrite(motor2pin1, LOW);
+    digitalWrite(motor2pin2, LOW);
+    //delay(2000);
+
+  }
+
+}
+void garage_close()
+{
+  for(int i=0; i<1; i++)
+   { digitalWrite(motor2pin1, LOW);
+    digitalWrite(motor2pin2, HIGH);
+    delay(500);
+  
+    digitalWrite(motor2pin1, LOW);
+    digitalWrite(motor2pin2, LOW);
+   // delay(2000);
+
+  }  
+}
