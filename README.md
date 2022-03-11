@@ -15,7 +15,7 @@ Se va implementa o aplicatie pentru telefonul mobil prin care se vor controla ur
 Pentru realizarea proiectului voi folosi: o placuta arduino uno, un modul bluetooth, un driver de motoare, doua motoare,
 leduri, un senzor de temperatura.
 
-![schema_circuit](/uploads/973508fc7d159f6e30a9a5e6181263ac/schema_circuit.jpeg)
+![schema_circuit](schema_circuit.jpeg)
 
 Proiecte similare disponibile pe internet:
 
